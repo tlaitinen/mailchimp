@@ -13,8 +13,8 @@ import Data.Char (isAlpha, toLower, isUpper)
 
 
 import Data.Time.Clock (UTCTime)
-import Data.Time.Format (formatTime, parseTime)
-import System.Locale (defaultTimeLocale)
+import Data.Time.Format (formatTime, parseTimeM)
+import Data.Time (defaultTimeLocale)
 
 -- | Creates Aeson objects after filtering to remove null values.
 filterObject list =
@@ -33,7 +33,7 @@ mcFormatString = "%F %T"
 instance ToJSON MCTime where
   toJSON (MCTime t) = String $ pack $ formatTime defaultTimeLocale mcFormatString t
 instance FromJSON MCTime where
-  parseJSON (String s) = maybe mzero (return . MCTime) $ parseTime defaultTimeLocale mcFormatString (unpack s)
+  parseJSON (String s) = maybe mzero (return . MCTime) $ parseTimeM True defaultTimeLocale mcFormatString (unpack s)
   parseJSON _ = mzero
 
 -- | Removes the first Int characters of string, then converts from CamelCase to underscore_case.
@@ -48,3 +48,4 @@ convertName prefixLength pname =
     x : '_' : camelToUnderscore (toLower y : xs)
   camelToUnderscore (x : xs) = x : camelToUnderscore xs
   camelToUnderscore x = x
+

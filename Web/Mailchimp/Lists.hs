@@ -112,13 +112,12 @@ import Web.Mailchimp.Util
 import Data.Text (Text, unpack)
 import Data.Aeson (Value(..), object, (.=), ToJSON(..), FromJSON(..), (.:), (.:?), Value(..))
 import Data.Aeson.Types (Pair)
-import Data.Aeson.TH (deriveFromJSON, deriveToJSON)
+import Data.Aeson.TH (deriveFromJSON, deriveToJSON, defaultOptions, Options(..))
 import Control.Monad (mzero, when)
 import Control.Applicative ((<|>))
 import Data.Time.Clock (UTCTime)
 import Data.Maybe (catMaybes)
 import Data.Default (Default(..))
-
 -- | Represents an individual mailing list
 newtype ListId = ListId {unListId :: Text}
   deriving (Show, Eq)
@@ -246,7 +245,7 @@ instance FromJSON AbuseReport where
     return $ AbuseReport ar_date ar_email ar_campaign_id ar_type
   parseJSON _ = mzero
 
--- $(deriveFromJSON (convertName 2) ''AbuseReport)
+-- $(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 2)} ''AbuseReport)
 
 
 -- | Aggregate abuse results returnd by abuseReports
@@ -263,7 +262,7 @@ instance FromJSON AbuseResults where
     return $ AbuseResults ar_total ar_data
   parseJSON _ = mzero
 
--- $(deriveFromJSON (convertName 2) ''AbuseResults)
+-- $(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 2)} ''AbuseResults)
 
 -- | Queries Mailchimp for the abuse reports for a given mailing list
 --
@@ -315,7 +314,7 @@ instance FromJSON UserResultError where
     return $ UserResultError bsre_email bsre_code bsre_error bsre_row
   parseJSON _ = mzero
 
-$(deriveToJSON (convertName 4) ''UserResultError)
+$(deriveToJSON defaultOptions{fieldLabelModifier=(convertName 4)} ''UserResultError)
 
 -- | The result type of batchSubscribe
 data BatchSubscribeResult = BatchSubscribeResult
@@ -328,7 +327,7 @@ data BatchSubscribeResult = BatchSubscribeResult
   }
   deriving (Show, Eq)
 
-$(deriveFromJSON (convertName 3) ''BatchSubscribeResult)
+$(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 3)} ''BatchSubscribeResult)
 
 
 -- | Subscribe many users at once to a particular list.
@@ -382,7 +381,7 @@ instance FromJSON BatchUnsubscribeResult where
     bur_errors <- v .: "errors"
     return $ BatchUnsubscribeResult bur_success_count bur_error_count bur_errors
   parseJSON _ = mzero
--- $(deriveFromJSON (convertName 3) ''BatchUnsubscribeResult)
+-- $(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 3)} ''BatchUnsubscribeResult)
 
 
 -- | Unsubscribe multiple users from a list.
@@ -427,7 +426,7 @@ instance FromJSON ClientItem where
     return $ ClientItem ci_client ci_percent ci_members
   parseJSON _ = mzero
 
--- $(deriveFromJSON (convertName 2) ''ClientItem)
+-- $(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 2)} ''ClientItem)
 
 
 data ClientResultsCategory = ClientResultsCategory
@@ -443,7 +442,7 @@ instance FromJSON ClientResultsCategory where
     return $ ClientResultsCategory cr_penetration cr_clients
   parseJSON _ = mzero
 
--- $(deriveFromJSON (convertName 2) ''ClientResultsCategory)
+-- $(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 2)} ''ClientResultsCategory)
 
 
 data ClientResults = ClientResults
@@ -465,7 +464,7 @@ instance FromJSON ClientResults where
                           else fail "Non-empty array in ClientResults"
   parseJSON _ = mzero
 
--- $(deriveFromJSON (convertName 2) ''ClientResults)
+-- $(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 2)} ''ClientResults)
 
 
 -- | Gets the user agent info for members of the list.
@@ -504,9 +503,9 @@ instance FromJSON GrowthHistoryResult where
   parseJSON _ = mzero
 
 
-$(deriveToJSON (convertName 3) ''GrowthHistoryResult)
+$(deriveToJSON defaultOptions{fieldLabelModifier=(convertName 3)} ''GrowthHistoryResult)
 
--- $(deriveFromJSON (convertName 3) ''GrowthHistoryResult)
+-- $(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 3)} ''GrowthHistoryResult)
 
 -- | Gets the growth history by month for an account or list.
 --
@@ -530,7 +529,7 @@ instance FromJSON CompleteResult where
     return $ CompleteResult cr_complete
   parseJSON _ = mzero
 
--- $(deriveFromJSON (convertName 2) ''CompleteResult)
+-- $(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 2)} ''CompleteResult)
 
 -- | Adds an interest group to a list.
 --
@@ -612,7 +611,7 @@ instance FromJSON InterestGroupingAddResult where
     return $ InterestGroupingAddResult igar_id
   parseJSON _ = mzero
 
--- $(deriveFromJSON (convertName 4) ''InterestGroupingAddResult)
+-- $(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 4)} ''InterestGroupingAddResult)
 
 -- | Creates a new Interest Grouping
 --
@@ -677,7 +676,7 @@ instance FromJSON InterestGroupDetail where
     return $ InterestGroupDetail igd_bit igd_name igd_display_order igd_subscribers
   parseJSON _ = mzero
 
--- $(deriveFromJSON (convertName 3) ''InterestGroupDetail)
+-- $(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 3)} ''InterestGroupDetail)
 
 data InterestGrouping = InterestGrouping
   { igId :: GroupingId
@@ -696,7 +695,7 @@ instance FromJSON InterestGrouping where
     return $ InterestGrouping ig_id ig_name ig_form_field ig_groups
   parseJSON _ = mzero
 
--- $(deriveFromJSON (convertName 2) ''InterestGrouping)
+-- $(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 2)} ''InterestGrouping)
 
 -- | Lists the Interest Groupings for a list.
 --
@@ -751,9 +750,9 @@ instance FromJSON ListStats where
   parseJSON _ = mzero
 
 
--- $(deriveFromJSON (convertName 2) ''ListStats)
+-- $(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 2)} ''ListStats)
 
-$(deriveToJSON (convertName 2) ''ListStats)
+$(deriveToJSON defaultOptions{fieldLabelModifier=(convertName 2)} ''ListStats)
 
 data ListInfo = ListInfo
   { liId :: ListId
@@ -796,7 +795,7 @@ instance FromJSON ListInfo where
     return $ ListInfo li_id li_web_id li_name li_date_created li_email_type_option li_use_awesomebar li_default_from_name li_default_from_email li_default_subject li_default_language li_list_rating li_subscribe_url_short li_beamer_address li_visibility li_stats li_modules
   parseJSON _ = mzero
 
--- $(deriveFromJSON (convertName 2) ''ListInfo)
+-- $(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 2)} ''ListInfo)
 
 data ListResultError = ListResultError 
   { lreParam :: Text
@@ -813,7 +812,7 @@ instance FromJSON ListResultError where
     return $ ListResultError lre_param lre_code lre_error
   parseJSON _ = mzero
 
--- $(deriveFromJSON (convertName 2) ''ListResultError)
+-- $(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 2)} ''ListResultError)
 
 
 data ListsResult = ListsResult
@@ -831,7 +830,7 @@ instance FromJSON ListsResult where
     return $ ListsResult lr_total lr_data lr_errors
   parseJSON _ = mzero
 
--- $(deriveFromJSON (convertName 2) ''ListsResult)
+-- $(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 2)} ''ListsResult)
 
 data ListFilters = ListFilters
   { lfListId :: Maybe ListId
@@ -858,7 +857,7 @@ instance FromJSON ListFilters where
     return $ ListFilters lf_list_id lf_list_name lf_from_name lf_from_email lf_from_subject lf_created_before lf_created_after lf_exact
   parseJSON _ = mzero
 
-$(deriveToJSON (convertName 2) ''ListFilters)
+$(deriveToJSON defaultOptions{fieldLabelModifier=(convertName 2)} ''ListFilters)
 
 instance Default ListFilters where
   def = ListFilters Nothing Nothing Nothing Nothing Nothing Nothing Nothing Nothing
@@ -921,7 +920,7 @@ instance FromJSON ListLocationsResult where
     return $ ListLocationsResult llr_country llr_cc llr_percent llr_total
   parseJSON _ = mzero
 
--- $(deriveFromJSON (convertName 3) ''ListLocationsResult)
+-- $(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 3)} ''ListLocationsResult)
 
 -- | Get the locations for the subscribers of a list
 --
@@ -951,7 +950,7 @@ instance FromJSON ActivityAction where
     return $ ActivityAction aa_action aa_timestamp aa_url aa_type aa_campaign_id aa_campaign_data
   parseJSON _ = mzero
 
--- $(deriveFromJSON (convertName 2) ''ActivityAction)
+-- $(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 2)} ''ActivityAction)
 
 data ActivityRecord = ActivityRecord
   { arecEmail :: EmailId
@@ -966,7 +965,7 @@ instance FromJSON ActivityRecord where
     return $ ActivityRecord arec_activity arec_email
   parseJSON _ = mzero
 
--- $(deriveFromJSON (convertName 4) ''ActivityRecord)
+-- $(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 4)} ''ActivityRecord)
 
 data MemberActivityResult = MemberActivityResult
   { marSuccessCount :: Int
@@ -985,7 +984,7 @@ instance FromJSON MemberActivityResult where
     return $ MemberActivityResult mar_success_count mar_error_count mar_errors mar_data
   parseJSON _ = mzero
 
--- $(deriveFromJSON (convertName 3) ''MemberActivityResult)
+-- $(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 3)} ''MemberActivityResult)
 
 -- | Get the activity of a list of members for a list
 --
@@ -1007,7 +1006,7 @@ instance FromJSON MemberList where
     return $ MemberList ml_id ml_status
   parseJSON _ = mzero
   
--- $(deriveFromJSON (convertName 2) ''MemberList)
+-- $(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 2)} ''MemberList)
 
 data MemberGeo = MemberGeo
   { mgLatitude :: Text
@@ -1032,7 +1031,7 @@ instance FromJSON MemberGeo where
     return $ MemberGeo mg_latitude mg_longitude mg_gmtoff mg_dstoff mg_timezone mg_cc mg_region
   parseJSON _ = mzero
 
--- $(deriveFromJSON (convertName 2) ''MemberGeo)
+-- $(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 2)} ''MemberGeo)
 
 data MemberClient = MemberClient
   { mcName :: Text
@@ -1047,7 +1046,7 @@ instance FromJSON MemberClient where
     return $ MemberClient mc_name mc_icon_url
   parseJSON _ = mzero
 
--- $(deriveFromJSON (convertName 2) ''MemberClient)
+-- $(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 2)} ''MemberClient)
 
 data MemberStaticSegment = MemberStaticSegment
   { mssId :: Int
@@ -1064,7 +1063,7 @@ instance FromJSON MemberStaticSegment where
     return $ MemberStaticSegment mss_id mss_name mss_added
   parseJSON _ = mzero
 
--- $(deriveFromJSON (convertName 2) ''MemberStaticSegment)
+-- $(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 2)} ''MemberStaticSegment)
 
 data MemberNote = MemberNote
   { mnId :: Int
@@ -1085,7 +1084,7 @@ instance FromJSON MemberNote where
     return $ MemberNote mn_id mn_note mn_created mn_updated mn_created_by_name
   parseJSON _ = mzero
 
--- $(deriveFromJSON (convertName 2) ''MemberNote)
+-- $(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 2)} ''MemberNote)
 
 
 data MemberInfoFields = MemberInfoFields
@@ -1139,7 +1138,7 @@ instance FromJSON MemberInfoFields where
     return $ MemberInfoFields mi_email_type mi_merges mi_status mi_ip_signup mi_timestamp_signup mi_ip_opt mi_timestamp_opt mi_member_rating mi_campaign_id mi_lists mi_timestamp mi_info_changed mi_web_id mi_list_id mi_list_name mi_language mi_is_gmonkey mi_geo mi_clients mi_static_segments mi_notes
   parseJSON _ = mzero
 
--- $(deriveFromJSON (convertName 2) ''MemberInfoFields)
+-- $(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 2)} ''MemberInfoFields)
 
 -- | MemberInfo holds the results from calling "members". It doesn't match the layout
 --   of the Mailchimp API so that the EmailResult can be pulled out as one type.
@@ -1169,7 +1168,7 @@ instance FromJSON MemberInfoError where
     return $ MemberInfoError mie_email mie_error
   parseJSON _ = mzero
 
--- $(deriveFromJSON (convertName 3) ''MemberInfoError)
+-- $(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 3)} ''MemberInfoError)
 
 data MemberInfoResult = MemberInfoResult
   { mirSuccessCount :: Int
@@ -1188,7 +1187,7 @@ instance FromJSON MemberInfoResult where
     return $ MemberInfoResult mir_success_count mir_error_count mir_errors mir_data
   parseJSON _ = mzero
 
--- $(deriveFromJSON (convertName 3) ''MemberInfoResult)
+-- $(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 3)} ''MemberInfoResult)
 
 -- | Get information for members of a list
 --
@@ -1221,7 +1220,7 @@ instance FromJSON MembersResult where
     return $ MembersResult mr_total mr_data
   parseJSON _ = mzero
 
--- $(deriveFromJSON (convertName 2) ''MembersResult)
+-- $(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 2)} ''MembersResult)
 
 
 -- | Get all the members of a list matching a query.
@@ -1332,7 +1331,7 @@ instance FromJSON MergeVarOptions where
     return $ MergeVarOptions mvo_field_type mvo_req mvo_public mvo_show mvo_order mvo_default_value mvo_helptext mvo_choices mvo_dateformat mvo_phoneformat mvo_default_country
   parseJSON _ = mzero
 
--- $(deriveFromJSON (convertName 3) ''MergeVarOptions)
+-- $(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 3)} ''MergeVarOptions)
 
 instance Default MergeVarOptions where
   def = MergeVarOptions { mvoFieldType = Nothing
@@ -1347,7 +1346,7 @@ instance Default MergeVarOptions where
                         , mvoPhoneformat = Nothing
                         , mvoDefaultCountry = Nothing
                         }
-$(deriveToJSON (convertName 3) ''MergeVarOptions)
+$(deriveToJSON defaultOptions{fieldLabelModifier=(convertName 3)} ''MergeVarOptions)
 
 data MergeVarResult = MergeVarResult
   { mvrName :: Text
@@ -1382,9 +1381,9 @@ instance FromJSON MergeVarResult where
     return $ MergeVarResult mvr_name mvr_req mvr_field_type mvr_public mvr_show mvr_order mvr_default mvr_helptext mvr_size mvr_tag mvr_choices mvr_id
   parseJSON _ = mzero
 
--- $(deriveFromJSON (convertName 3) ''MergeVarResult)
+-- $(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 3)} ''MergeVarResult)
 
-$(deriveToJSON (convertName 3) ''MergeVarResult)
+$(deriveToJSON defaultOptions{fieldLabelModifier=(convertName 3)} ''MergeVarResult)
 
 -- | Add a merge tag to a list.
 --
@@ -1478,7 +1477,7 @@ instance FromJSON MergeVarInfo where
     return $ MergeVarInfo mvi_id mvi_name mvi_merge_vars
   parseJSON _ = mzero
 
--- $(deriveFromJSON (convertName 3) ''MergeVarInfo)
+-- $(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 3)} ''MergeVarInfo)
 
 data MergeVarError = MergeVarError
   { mveId :: ListId
@@ -1495,7 +1494,7 @@ instance FromJSON MergeVarError where
     return $ MergeVarError mve_id mve_code mve_msg
   parseJSON _ = mzero
 
--- $(deriveFromJSON (convertName 3) ''MergeVarError)
+-- $(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 3)} ''MergeVarError)
 
 data MergeVarInfoResult = MergeVarInfoResult
   { mvirSuccessCount :: Int
@@ -1514,7 +1513,7 @@ instance FromJSON MergeVarInfoResult where
     return $ MergeVarInfoResult mvir_success_count mvir_error_count mvir_data mvir_errors
   parseJSON _ = mzero
 
--- $(deriveFromJSON (convertName 4) ''MergeVarInfoResult)
+-- $(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 4)} ''MergeVarInfoResult)
 
 -- | Retrieve list of marge vars for a list.
 --
@@ -1536,7 +1535,7 @@ instance FromJSON StaticSegmentAddResult where
     return $ StaticSegmentAddResult ssar_id
   parseJSON _ = mzero
 
--- $(deriveFromJSON (convertName 4) ''StaticSegmentAddResult)
+-- $(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 4)} ''StaticSegmentAddResult)
 
 -- | Add a static segment for later use.
 --
@@ -1644,7 +1643,7 @@ instance FromJSON StaticSegmentResult where
     return $ StaticSegmentResult ssr_id ssr_name ssr_member_count ssr_created_date ssr_last_update ssr_last_reset
   parseJSON _ = mzero
 
--- $(deriveFromJSON (convertName 3) ''StaticSegmentResult)
+-- $(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 3)} ''StaticSegmentResult)
 
 -- | Get all of the static segments
 --
@@ -1720,9 +1719,9 @@ instance FromJSON WebhookActions where
   parseJSON _ = mzero
 
 
-$(deriveToJSON (convertName 2) ''WebhookActions)
+$(deriveToJSON defaultOptions{fieldLabelModifier=(convertName 2)} ''WebhookActions)
 
--- $(deriveFromJSON (convertName 2) ''WebhookActions)
+-- $(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 2)} ''WebhookActions)
 
 instance Default WebhookActions where
   def = WebhookActions Nothing Nothing Nothing Nothing Nothing Nothing
@@ -1742,9 +1741,9 @@ instance FromJSON WebhookSources where
     return $ WebhookSources ws_user ws_admin ws_api
   parseJSON _ = mzero
 
-$(deriveToJSON (convertName 2) ''WebhookSources)
+$(deriveToJSON defaultOptions{fieldLabelModifier=(convertName 2)} ''WebhookSources)
 
--- $(deriveFromJSON (convertName 2) ''WebhookSources)
+-- $(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 2)} ''WebhookSources)
 
 type WebhookId = Text
 
@@ -1759,7 +1758,7 @@ instance FromJSON WebhookAddResult where
     return $ WebhookAddResult war_id
   parseJSON _ = mzero
 
--- $(deriveFromJSON (convertName 3) ''WebhookAddResult)
+-- $(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 3)} ''WebhookAddResult)
 
 -- | Add a webhook URL to a list.
 --
@@ -1808,7 +1807,7 @@ instance FromJSON WebhookResult where
     return $ WebhookResult wr_url wr_actions wr_sources
   parseJSON _ = mzero
 
--- $(deriveFromJSON (convertName 2) ''WebhookResult)
+-- $(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 2)} ''WebhookResult)
 
 -- | List all the webhooks for a list.
 --

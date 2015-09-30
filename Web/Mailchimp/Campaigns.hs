@@ -11,9 +11,8 @@ import Web.Mailchimp.Util
 
 import Data.Text (Text)
 import Data.Aeson (Value(..), object, (.=), decode, ToJSON(..), FromJSON(..), (.:), (.:?), Value(..))
-import Data.Aeson.TH (deriveFromJSON, deriveToJSON)
+import Data.Aeson.TH (deriveFromJSON, deriveToJSON, defaultOptions, Options(..))
 import Control.Monad (mzero)
-
 
 newtype CampaignId = CampaignId {unCampaignId :: Text}
   deriving (Show, Eq)
@@ -29,7 +28,7 @@ data CampaignTracking = CampaignTracking
   }
   deriving (Show, Eq)
 
-$(deriveFromJSON (convertName 2) ''CampaignTracking)
+$(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 2)} ''CampaignTracking)
 
 data CampaignInfo = CampaignInfo
   { ciId :: CampaignId
@@ -69,4 +68,4 @@ data CampaignInfo = CampaignInfo
   }
   deriving (Show, Eq)
 
-$(deriveFromJSON (convertName 2) ''CampaignInfo)
+$(deriveFromJSON defaultOptions{fieldLabelModifier=(convertName 2)} ''CampaignInfo)

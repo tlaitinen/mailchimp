@@ -52,8 +52,9 @@ import Data.Typeable (Typeable)
 import Data.Aeson (FromJSON(..), (.:), Value(..), decode, (.=))
 import Data.Aeson.Types (Pair)
 import Data.Aeson.Encode (encode)
-import Data.Conduit (runResourceT)
+import Control.Monad.Trans.Resource (runResourceT)
 import Network.HTTP.Conduit (parseUrl, newManager, httpLbs, RequestBody(..), Response(..), HttpException(..), Request(..), Manager)
+import Network.HTTP.Client.Conduit (defaultManagerSettings)
 import Network.HTTP.Types (methodPost)
 import Network.HTTP.Types.Header (ResponseHeaders)
 import Control.Monad.Reader (ReaderT, MonadReader, runReaderT, ask)
@@ -73,7 +74,7 @@ askApiKey = fmap mcApiKey ask
 -- | Creates a MailchimpConfig with a new Manager.
 defaultMailchimpConfig :: MonadIO m => MailchimpApiKey -> m MailchimpConfig
 defaultMailchimpConfig apiKey = do
-  man <- liftIO $ newManager def
+  man <- liftIO $ newManager defaultManagerSettings
   return MailchimpConfig { mcApiKey = apiKey
                          , mcManager = man
                          }
@@ -147,9 +148,7 @@ query' section apiMethod request = do
   let req = initReq { requestBody = RequestBodyLBS $ encode request 
                     , method = methodPost
                     }
-  $(logDebug) $ pack . show $ requestBody req
   response <- catch (liftIO $ runResourceT (httpLbs req $ mcManager config)) catchHttpException
-  $(logDebug) $ pack . show $ responseBody response
   case decode $ responseBody response of
     Just result -> return result
     Nothing -> throwIO $ OtherMailchimpError (-1) "ParseError" "Could not parse result JSON from Mailchimp"
