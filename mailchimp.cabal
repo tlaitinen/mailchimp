@@ -33,24 +33,24 @@ library
               PatternGuards
 
   build-depends:       base     >= 4     && < 5
-               ,       text     >= 0.11  
-               ,       mtl      >= 2.0  
-               ,       transformers >= 0.3
-               ,       transformers-base >= 0.4
-               ,       lifted-base >= 0.2
-               ,       monad-control >= 0.3
-               ,       resourcet >= 0.4
-               ,       monad-logger >= 0.3
-               ,       bytestring >= 0.9 
-               ,       aeson    >= 0.6   
-               ,       parsec   >= 3.1   
-               ,       conduit  >= 1.0
-               ,       http-conduit >= 1.9 
-               ,       http-types >= 0.8
-               ,       data-default >= 0.5
-               ,       time >= 1.4
-               ,       old-locale >= 1.0
-               ,       unordered-containers >= 0.2.3.0
+               ,       text     
+               ,       mtl      
+               ,       transformers 
+               ,       transformers-base 
+               ,       lifted-base 
+               ,       monad-control 
+               ,       resourcet 
+               ,       monad-logger 
+               ,       bytestring 
+               ,       aeson    -any
+               ,       parsec   
+               ,       conduit  
+               ,       http-conduit 
+               ,       http-types 
+               ,       data-default 
+               ,       time 
+               ,       old-locale 
+               ,       unordered-containers 
 
 test-suite hunit
   type: exitcode-stdio-1.0
@@ -61,19 +61,19 @@ test-suite hunit
               BangPatterns
 
   if !flag(test-hunit)
-    buildable: False
+    buildable: True
   else
     build-depends:       base
                  ,       mailchimp
-                 ,       HUnit >= 1.2
-                 ,       test-framework >= 0.6
-                 ,       test-framework-hunit >=0.2
-                 ,       aeson    >= 0.6   && < 0.7
-                 ,       text     >= 0.11  && < 1
-                 ,       unordered-containers >= 0.2
-                 ,       old-locale >= 1.0
-                 ,       time >= 1.4
-                 ,       transformers >= 0.3
-                 ,       data-default >= 0.5
+                 ,       HUnit 
+                 ,       test-framework 
+                 ,       test-framework-hunit 
+                 ,       aeson   
+                 ,       text     
+                 ,       unordered-containers 
+                 ,       old-locale 
+                 ,       time 
+                 ,       transformers 
+                 ,       data-default
 
 
